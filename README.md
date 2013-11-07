@@ -2,7 +2,9 @@ deka
 ===============
 Deka Thumb Generator
 
-You could use this script(s) to generate your own thumbnail gallery for the pictures/photos you have. Here are some screenshots to know what to expect.
+You could use this script(s) to generate your own thumbnail gallery for the pictures/photos you have. Here is a screenshot taken from browser window to know what to expect.
+![capture](https://f.cloud.github.com/assets/4558966/1492573/3edfb9c0-47c2-11e3-8dbd-6fd6316a5f99.PNG)
+
 
 Requirements
 ===============
