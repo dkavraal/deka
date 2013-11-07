@@ -132,31 +132,31 @@ if [ -e $STHUMBDIR ] || [ -e $BTHUMBDIR ]; then
 	IS_BIG_DONE=$(if [[ $HOWMANY_BIG -eq HOWMANY ]]; then echo 'all done.'; else echo 'missing...'; fi)
 	printf "\tSmall Thumbs: %6s\t\t[%13s]\n" "${HOWMANY_SMALL}" "${IS_SMALL_DONE}"
 	printf "\tBig Thumbs:   %6s\t\t[%13s]\n" "${HOWMANY_BIG}" "${IS_BIG_DONE}"
-	find "$PICDIR" -name *.jpg -type f -printf "%P\n" | cut -d"." -f1 | sort > $TMP_ALL_LIST
-	if [[ "${IS_SMALL_DONE:0:1}" == "m" ]]; then
-		REMAINING_CNT=$((${HOWMANY}-${HOWMANY_SMALL}))
-		echo "Going on to small thumbs... Remains ${REMAINING_CNT} images to go.";
-		cnt=$[$HOWMANY_SMALL+1]
-		find "$STHUMBDIR" -name *.gif -type f -printf "%P\n" | cut -c10- | cut -d"." -f1 | while read i; do find "$PICDIR" -inum $i -printf "%P\n"; done | sort > "$TMP_DONE_SMALLTHUMBS_LIST"
-		diff $TMP_ALL_LIST $TMP_DONE_SMALLTHUMBS_LIST | grep "<" | cut -c3- | while read i; do
-			find "$PICDIR" -name "${i}.jpg" -printf "convert -define jpeg:size=200x200 '%p' -thumbnail '100x100>' -gravity center -crop 120x120+0+0! -background skyblue -flatten '$STHUMBDIR/thumb_%i.gif'\n" | bash
-			lib_progress_bar -d 2 -m 55 $cnt ${HOWMANY}
-			cnt=$[$cnt+1]
-		done
-		rm  $TMP_DONE_SMALLTHUMBS_LIST
-	fi
-
-	if [[ "${IS_BIG_DONE:0:1}" =~ "m" ]]; then
-		REMAINING_CNT=$((${HOWMANY}-${HOWMANY_BIG}))
-		echo "Going on to big thumbs... Remains ${REMAINING_CNT} images to go.";
-		cnt=$[$HOWMANY_BIG+1]
-		find "$BTHUMBDIR" -name *.gif -type f -printf "%P\n" | cut -c10- | cut -d"." -f1 | while read i; do find "$PICDIR" -inum $i -printf "%P\n"; done | sort > "$TMP_DONE_BIGTHUMBS_LIST"
-		diff $TMP_ALL_LIST $TMP_DONE_BIGTHUMBS_LIST | grep "<" | cut -c3- | while read i; do
-			find "$PICDIR" -name "${i}.jpg" -printf "convert '%p' -resize x640 -resize '640x<' -gravity center -crop 640x480+0+0 +repage -flatten '${BTHUMBDIR}/thumbbig_%i.gif'\n" | bash
-			lib_progress_bar -d 2 -m 55 $cnt ${HOWMANY}
+	find "$PICDIR" -name *.jpg -type f -printf "%i\n" | sort > $TMP_ALL_LIST
+        if [[ "${IS_SMALL_DONE:0:1}" == "m" ]]; then
+                REMAINING_CNT=$((${HOWMANY}-${HOWMANY_SMALL}))
+                echo "Going on to small thumbs... Remains ${REMAINING_CNT} images to go.";
+                cnt=$[$HOWMANY_SMALL+1]
+                find "$STHUMBDIR" -name *.gif -type f -printf '%f\n' | cut -d"_" -f2 | cut -d"." -f1 | sort > "$TMP_DONE_SMALLTHUMBS_LIST"
+                diff $TMP_ALL_LIST $TMP_DONE_SMALLTHUMBS_LIST | grep "<" | cut -c3- | while read i; do
+                        find "$PICDIR" -inum "$i" -printf "convert -define jpeg:size=200x200 '%p' -thumbnail '100x100>' -gravity center -crop 120x120+0+0! -background skyblue -flatten '$STHUMBDIR/thumb_%i.gif'\n" | bash
+                        lib_progress_bar -d 2 -m 55 $cnt ${HOWMANY}
                         cnt=$[$cnt+1]
-		done
-		rm $TMP_DONE_BIGTHUMBS_LIST
+                done
+                rm  $TMP_DONE_SMALLTHUMBS_LIST
+        fi
+
+        if [[ "${IS_BIG_DONE:0:1}" =~ "m" ]]; then
+                REMAINING_CNT=$((${HOWMANY}-${HOWMANY_BIG}))
+                echo "Going on to big thumbs... Remains ${REMAINING_CNT} images to go.";
+                cnt=$[$HOWMANY_BIG+1]
+                find "$BTHUMBDIR" -name *.gif -type f -printf '%f\n' | cut -d"_" -f2 | cut -d"." -f1 | sort > "$TMP_DONE_BIGTHUMBS_LIST"
+                diff $TMP_ALL_LIST $TMP_DONE_BIGTHUMBS_LIST | grep "<" | cut -c3- | while read i; do
+                        find "$PICDIR" -inum "$i" -printf "convert '%p' -resize x640 -resize '640x<' -gravity center -crop 640x480+0+0 +repage -flatten '${BTHUMBDIR}/thumbbig_%i.gif'\n" | bash
+                        lib_progress_bar -d 2 -m 55 $cnt ${HOWMANY}
+                        cnt=$[$cnt+1]
+                done
+                rm $TMP_DONE_BIGTHUMBS_LIST
         fi
 
 	rm $TMP_ALL_LIST
