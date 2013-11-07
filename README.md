@@ -8,9 +8,9 @@ You could use this script(s) to generate your own thumbnail gallery for the pict
 
 Requirements
 ===============
-- bash | GNU bash, version 4.2.25(1)-release (x86_64-pc-linux-gnu)
+- bash | GNU bash, version 4.2.25(1)-release        [ most probably, older ones would work too ]
     - ls,find,echo,printf,|,mkdir :)
-- imagemagick | ImageMagick 6.6.9-7 2012-08-17 Q16 http://www.imagemagick.org
+- imagemagick | ImageMagick 6.6.9-7 2012-08-17 Q16  [ most probably, older ones would work too ]
 - wget (for the sample directory)
 - no need for root access
 
